@@ -15,19 +15,16 @@ data = np.array([
     #温度高い方，潮流早い方が，潮高い方が塩分濃度高い方が，発生確率高いとする．
 ])
 
-#動かない
-#print(data[0][0])
-# データを入力と出力に分割
+
 X = data[:,:-1]  # 入力: 温度, 潮の速さ, 潮の高さ, 塩分濃度
 Y = data[:,-1]  # 出力: 赤潮発生 (0: 発生しない, 1: 発生する)
-#np.shape(X)
 
 
-# 正規化
 
+#最小値がとれるかの確認
 min_values = X.min(axis=0)
 print("min_values=",min_values)
+
+# 正規化
 X_normalized = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
 print("normalized=",X_normalized)
-#print(X[0][0])
-#print(Y)
