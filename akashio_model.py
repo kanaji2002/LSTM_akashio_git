@@ -56,11 +56,19 @@ for epoch in range(num_epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    #if(epoch%10==0):
-    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
-    epochs_list.append(epoch)#損失関数を表示させるためのコード
-    loss_list.append(loss.item())
-    plt.plot(epochs_list, loss_list, color="k")
+    
+    if(epoch==0):
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.6f}')
+        epochs_list.append(epoch)#損失関数を表示させるためのコード
+        loss_list.append(loss.item())
+        plt.plot(epochs_list, loss_list, color="k")
+        
+    
+    elif(epoch%10==9):
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.6f}')
+        epochs_list.append(epoch)#損失関数を表示させるためのコード
+        loss_list.append(loss.item())
+        plt.plot(epochs_list, loss_list, color="k")
     
 # 損失関数のラベルの指定と表示   
 plt.legend()  
