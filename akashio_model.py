@@ -37,7 +37,7 @@ class LSTMModel(nn.Module):
 
 # モデル、損失関数、最適化手法の定義
 input_size = X.shape[1]
-hidden_size = 10000
+hidden_size = 1000
 output_size = 1
 
 model = LSTMModel(input_size, hidden_size, output_size)
@@ -45,7 +45,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 # モデルの学習
-num_epochs = 100
+num_epochs = 1000
 #epochs_list = list(range(num_epochs))
 epochs_list =[]
 loss_list = []
