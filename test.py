@@ -17,3 +17,4 @@ min_values = X.min(axis=0)
 # 結果を出力
 print("各列ごとの最小値:", min_values)
 print("最小値を持つ列のインデックス:", min_values.argmin())
+print(2)
