@@ -46,8 +46,9 @@ for idx, pre in enumerate(predict):
     answer=label_test[idx] #正解ラベル
     total +=1
 #ほぼ正解なら，正解とみなす．
-    if(pre-1) <=answer <= (pre+1):
-        ok +=1
+    #if(pre-1) <=answer <= (pre+1):
+    if answer == pre:
+          ok +=1
 print("ans=",ok, "/",total, "=",ok/total)
 
 
