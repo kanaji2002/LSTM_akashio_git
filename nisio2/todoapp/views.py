@@ -68,11 +68,10 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
 
 class TaskListLoginView(LoginView):
     fields = "__all__"
-    # template_name = "todoapp/login.html"
-    template_name = "todoapp/main.html"
+    template_name = "todoapp/login.html"
 
     def get_success_url(self):
-        return reverse_lazy("task")
+        return reverse_lazy("tasks")
 
 
 class RegisterTodoApp(FormView):
@@ -86,27 +85,3 @@ class RegisterTodoApp(FormView):
             print("ddddd")
             login(self.request, user)
         return super().form_valid(form)
-
-
-from django.shortcuts import render
-import requests, re
-from bs4 import BeautifulSoup
-
-def main(request):
-    url = 'https://www.jma.go.jp/jp/yoho/329.html' #気象庁のHP
-    res = requests.get(url)
-    res.encoding = res.apparent_encoding
-    soup = BeautifulSoup(res.text, "html.parser")
-    weathers = soup.find_all(class_='weather')
-    date_list = weather_list = []
-    for i  in weathers:
-        j = str(i).replace('\n','')
-        date = re.findall('<th class="weather">(.*?)<br/>', str(j))
-        date_list = date_list + date
-        weather = re.findall('alt="(.*?)" src', str(j))
-        weather_list = weather_list + weather
-    context = {
-        'seibu_today':date_list[0], 'seibu_tomorrow':date_list[1],
-        'seibu_today_w':weather_list[0], 'seibu_tomorrow_w':weather_list[1],
-        }
-    return render(request, 'main.html', context)
