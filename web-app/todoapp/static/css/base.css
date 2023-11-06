@@ -58,7 +58,7 @@ div p {
 }
 
 .tsuika_kennsaku {
-    float: left;
+  /*  float: left; */
     display: inline-block;
     margin: 0 10px;
 }
