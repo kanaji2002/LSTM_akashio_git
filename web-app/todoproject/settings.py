@@ -1,5 +1,5 @@
 
-
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,6 +97,8 @@ USE_TZ = True
 
 LOGIN_URL="login"
 STATIC_URL = 'static/'
-STATICFILES_DIRS=[BASE_DIR / "static"]
+STATICFILES_DIRS=[BASE_DIR / "todoapp/static",
+               
+                 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
