@@ -92,6 +92,13 @@ from django.shortcuts import render
 import requests, re
 from bs4 import BeautifulSoup
 
+def hello():
+    print("Hello!")
+
+
+def PrivacyView(request):
+    return render(request, 'todoapp/suionn.html')
+
 def main(request):
     url = 'https://www.jma.go.jp/jp/yoho/329.html' #気象庁のHP
     res = requests.get(url)
