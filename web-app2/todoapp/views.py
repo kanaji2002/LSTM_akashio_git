@@ -17,7 +17,7 @@ from django.contrib.auth import login
 
 
 def my_page_view(request):
-    return render(request, 'my_page.html')
+    return render(request, 'todoapp/my_page.html')
 
 def suionn_view(request):
     return render(request, 'suionn.html')
