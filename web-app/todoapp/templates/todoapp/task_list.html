@@ -4,12 +4,16 @@
 {% block content %}
 
 <div class="header">
-    <h1>赤潮予測アプリ</h1>
+    <h1>赤潮予測アプリです</h1>
 </div>
 
 
 <body>
     <h1>天気予報</h1>
+    <a href="{% url 'my_page' %}">Go to My Page</a>
+
+
+
     <h3>愛知県西部</h3>
     <div>{{ seibu_today }}:{{ seibu_today_w }}
     {% if '晴' in seibu_today_w %} 
@@ -39,11 +43,11 @@
       {% endif %}
     </div>
 <ul>
-    <li><a href="{% url 'todoapp:suionn' %}">水温</a></li>
-    <li><a href="{% %}">塩分濃度</a></li>
+    <li><a href="{% url 'suionn' %}">suionn</a></li>
+    <!-- <li><a href="{% %}">塩分濃度</a></li>
     <li><a href="{% %}">日射量</a></li>
     <li><a href="{% %}">潮流速度</a></li>
-    <li><a href="{% %}">溶存酸素濃度</a></li>
+    <li><a href="{% %}">溶存酸素濃度</a></li> -->
    
 </ul>
 
@@ -51,9 +55,7 @@
     <a href="{% url 'logout' %}" >ログアウト</a>
     </body>
 
-
-
-
+  
 <div class="tsuika_kennsaku_p">
     <div class="taskWrapper2">
         <div class = "taskWrapper2">

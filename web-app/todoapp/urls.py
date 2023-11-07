@@ -13,5 +13,5 @@ urlpatterns=[
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
     path("register/", RegisterTodoApp.as_view(), name="register"),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
-    path("templates/todoapp/suionn", views.PrivacyView, name='suionn'),
+    path("suionn/", views.suionn_view, name='suionn'),
 ]

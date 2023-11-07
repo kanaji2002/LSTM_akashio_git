@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
@@ -15,6 +16,17 @@ from django.contrib.auth import login
 
 # Create your views here.
 
+
+
+def my_page(request):
+    return render(request, 'todoapp/my_page.html')
+
+
+def suionn_view(request):
+        return render(request, 'suionn.html')
+
+def my_page_view(request):
+    return render(request, 'my_page.html')
 
 class TaskList(LoginRequiredMixin, ListView):
     model = Task
@@ -96,8 +108,6 @@ def hello():
     print("Hello!")
 
 
-def PrivacyView(request):
-    return render(request, 'todoapp/suionn.html')
 
 def main(request):
     url = 'https://www.jma.go.jp/jp/yoho/329.html' #気象庁のHP
