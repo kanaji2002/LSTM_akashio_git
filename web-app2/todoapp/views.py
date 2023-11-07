@@ -20,7 +20,19 @@ def my_page_view(request):
     return render(request, 'todoapp/my_page.html')
 
 def suionn_view(request):
-    return render(request, 'suionn.html')
+    return render(request, 'todoapp/suionn.html')
+
+def nissyaryou_view(request):
+    return render(request, 'todoapp/nissyaryou.html')
+
+def DO_view(request):
+    return render(request, 'todoapp/DO.html')
+
+def ennbunn_view(request):
+    return render(request, 'todoapp/ennbunn.html')
+
+def tyouryuu_view(request):
+    return render(request, 'todoapp/tyouryuu.html')
 
 
 

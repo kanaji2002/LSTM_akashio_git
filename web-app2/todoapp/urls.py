@@ -13,4 +13,8 @@ urlpatterns=[
     path("register/", RegisterTodoApp.as_view(), name="register"),
     path("my_page1/", views.my_page_view, name='my_page'),
     path("suionn/", views.suionn_view, name='suionn'),
+    path("nissyaryou/", views.nissyaryou_view, name='nissyaryou'),
+    path("DO/", views.DO_view, name='DO'),
+    path("ennbunn/", views.ennbunn_view, name='ennbunn'),
+    path("tyouryuu/", views.tyouryuu_view, name='tyouryuu'),
 ]
