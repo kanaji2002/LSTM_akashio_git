@@ -1,12 +1,15 @@
+<!DOCTYPE html>
 {% extends 'todoapp/base.html'%}
 {% load static %}
 {% block content %}
 
 <div class="header">
-    <h1>赤潮予測です．</h1>
+    <h1>赤潮予測です</h1>
 </div>
 
+<a href="{% url 'register' %}">Go to My Page</a>
 
+<a href="{% url 'suionn' %}">水温</a>
 <div class="tsuika_kennsaku_p">
     <div class="taskWrapper2">
         <div class = "taskWrapper2">
