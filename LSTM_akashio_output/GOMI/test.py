@@ -7,3 +7,6 @@ print(df)
 df.drop([4], inplace=True)
 
 print(df)
+from YORIGOMI import kannsuu
+a=kannsuu.kaesu()
+print(a)

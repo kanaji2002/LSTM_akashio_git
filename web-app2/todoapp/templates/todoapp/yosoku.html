@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% extends 'todoapp/base.html'%}
+{% block content %}
+<h1>予測結果の表示</h1>
+
+<div >
+    <p>
+      {{ text }}
+    </p>
+</div>
+
+<div>
+<p>
+    {{ time }}
+</p>
+</div>
+
+<div>
+
+  <p>予測結果は</p>
+  <p>
+    {{ yosoku }}
+  </p>
+
+  <p>です</p>
+  </div>
+
+{% endblock content %}

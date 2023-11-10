@@ -17,4 +17,6 @@ urlpatterns=[
     path("DO/", views.DO_view, name='DO'),
     path("ennbunn/", views.ennbunn_view, name='ennbunn'),
     path("tyouryuu/", views.tyouryuu_view, name='tyouryuu'),
+    path("yosoku/", views.yosoku_view, name='yosoku'),
+
 ]

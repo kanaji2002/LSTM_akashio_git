@@ -12,7 +12,16 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from datetime import datetime
 
+# 自作関数の呼び出し
+import sys
+
+from AI_scripts import akashio_random
+
+# sys.path.append('C:/Users/Kanaji Rinntarou/Desktop/kennkyuu/LSTM_akashio/web-app2/todoapp')
+
+# sys.path.append('/web-app2/todoapp/AI_scripts')
 # Create your views here.
 
 
@@ -33,6 +42,19 @@ def ennbunn_view(request):
 
 def tyouryuu_view(request):
     return render(request, 'todoapp/tyouryuu.html')
+
+
+
+def yosoku_view(request):
+    now = datetime.now()
+    yosoku=akashio_random.yosoku()
+    # yosoku=test.test()
+    context = {
+        'text': 'テストです。',
+        'time': now,
+        'yosoku': yosoku,
+    }
+    return render(request, 'todoapp/yosoku.html', context)
 
 
 
