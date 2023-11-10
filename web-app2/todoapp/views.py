@@ -14,12 +14,27 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from datetime import datetime
 
-# 自作関数の呼び出し
 import sys
+import os
 
-from AI_scripts import akashio_random
+# 現在のスクリプトのディレクトリを取得
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# sys.path.append('C:/Users/Kanaji Rinntarou/Desktop/kennkyuu/LSTM_akashio/web-app2/todoapp')
+# your_module の絶対パスを生成し sys.path に追加
+module_path = os.path.join(script_dir, 'AI_scripts')
+sys.path.append(module_path)
+
+# モジュールが追加されたか確認
+print(sys.path)
+
+
+# 自作関数の呼び出し
+
+
+import akashio_random
+# from AI_scripts import akashio_random
+
+# sys.path.append('C:/Users/Kanaji Rinntarou/Desktop/kennkyuu/LSTM_akashio/web-app2/todoapp/AI_scripts')
 
 # sys.path.append('/web-app2/todoapp/AI_scripts')
 # Create your views here.
