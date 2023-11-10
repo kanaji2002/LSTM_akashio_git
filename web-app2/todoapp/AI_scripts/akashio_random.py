@@ -8,7 +8,14 @@ def yosoku():
     wine_csv=[]
 
 
-    with open ("web-app2/todoapp/AI_scripts/CSV/number.csv","r", encoding="utf-8") as fp:
+    # with open ("web-app2/todoapp/AI_scripts/CSV/number.csv","r", encoding="utf-8") as fp:
+    #     no=0
+    #     for line in fp:
+    #         line=line.strip()
+    #         cols=line.split(";")
+    #         wine_csv.append(cols)
+            
+    with open ("todoapp/AI_scripts/CSV/number.csv","r", encoding="utf-8") as fp:
         no=0
         for line in fp:
             line=line.strip()
@@ -56,7 +63,7 @@ def yosoku():
         #if(pre-1) <=answer <= (pre+1):
         if answer == pre:
             ok +=1
-    print("ans=",ok, "/",total, "=",ok/total)
+    #print("ans=",ok, "/",total, "=",ok/total)
 
     
 
@@ -73,7 +80,6 @@ def yosoku():
     # print("Classification Report:\n", cl_report)
 
     return predicted_grade
-
 
 # 予想結果をyosoku.htmlファイルに表示させる関数
 

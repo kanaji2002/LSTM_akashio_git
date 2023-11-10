@@ -29,16 +29,7 @@ print(sys.path)
 
 
 # 自作関数の呼び出し
-
-
 import akashio_random
-# from AI_scripts import akashio_random
-
-# sys.path.append('C:/Users/Kanaji Rinntarou/Desktop/kennkyuu/LSTM_akashio/web-app2/todoapp/AI_scripts')
-
-# sys.path.append('/web-app2/todoapp/AI_scripts')
-# Create your views here.
-
 
 def my_page_view(request):
     return render(request, 'todoapp/my_page.html')
