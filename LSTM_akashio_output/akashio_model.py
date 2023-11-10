@@ -45,7 +45,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 # モデルの学習
-num_epochs = 1000
+num_epochs = 100
 #epochs_list = list(range(num_epochs))
 epochs_list =[]
 loss_list = []
@@ -83,5 +83,10 @@ with torch.no_grad():
     test_output = model(X.view(-1, 1, input_size))
     predicted = (test_output.view(-1).numpy() > 0.5).astype(int)
     print("Predicted labels:", predicted)
+    
+#ここから変更していく．11/10
 
-
+# # nissyaryou,tyouryuusokudo , ennbunnnoudo , suionn
+# test=[3,43,2,1]
+# test_pred=model.predicted(test)
+# print(test_pred)
