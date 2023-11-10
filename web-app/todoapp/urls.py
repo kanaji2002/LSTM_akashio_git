@@ -14,4 +14,5 @@ urlpatterns=[
     path("register/", RegisterTodoApp.as_view(), name="register"),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
     path("suionn/", views.suionn_view, name='suionn'),
+    path('my_page/', views.my_page_view, name='my_page'),
 ]

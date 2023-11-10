@@ -2,8 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+filepath='winequality-white.csv'
+
 # Load the wine data from a CSV file
-wine = pd.read_csv("winequality-white.csv", delimiter=';')
+wine2 = pd.read_csv(filepath, delimiter=';')
 
 # Extract the columns for the 3D plot
 xname = "volatile acidity"
