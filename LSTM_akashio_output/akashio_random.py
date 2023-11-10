@@ -1,14 +1,25 @@
 from sklearn import  svm, metrics
 from sklearn.model_selection import train_test_split
+import pandas as pd
+
 
 # ワインデータをファイルを開いて読み込む．
 wine_csv=[]
-with open ("LSTM_akashio_output/hennsuu4_out1.csv","r", encoding="utf-8") as fp:
+# with open ("LSTM_akashio_output/hennsuu4_out1.csv","r", encoding="utf-8") as fp:
+#     no=0
+#     for line in fp:
+#         line=line.strip()
+#         cols=line.split(";")
+#         wine_csv.append(cols)
+
+with open ("LSTM_akashio_output/CSV/number.csv","r", encoding="utf-8") as fp:
     no=0
     for line in fp:
         line=line.strip()
         cols=line.split(";")
         wine_csv.append(cols)
+        
+# wine = pd.read_csv("LSTM_akashio_output/hennsuu4_out1.csv", delimiter=';')
         
 #1行目はヘッダ行なので削除
 wine_csv=wine_csv[1:]
@@ -53,8 +64,33 @@ print("ans=",ok, "/",total, "=",ok/total)
 
 
 
-# #結果を表示する
+
+# 新しいデータで予測してみる
+new_data = [[3, 4, 8, 9, 2, 3, 4, 5, 6, 7, 1]]
+predicted_grade = clf.predict(new_data)
+print("Predicted Grade:", predicted_grade)
+
+# 結果を表示する
+ac_score = metrics.accuracy_score(label_test, predict)
+cl_report = metrics.classification_report(label_test, predict)
+print("Accuracy Score:", ac_score)
+print("Classification Report:\n", cl_report)
+
+# data['fixed acidity']=3
+# data['volatile acidity']=4
+# data['citric acid']=8
+# data['residual sugar']=9
+
+# yread=clf.predict(data)
+# print(yread)
+# # #結果を表示する
 # ac_score=metrics.accuracy_score(label_test,predict)
 # cl_report=metrics.classification_report(label_test,predict)
 # print("ans=",ac_score)
 # print("report=\n",cl_report)
+
+# # nissyaryou,tyouryuusokudo , ennbunnnoudo , suionn
+# test=[[3,43,2,1,2,3,4,5,6,7,1]]
+# # test=test.reshape(-1, 1)
+# test_pred=clf.predict(test)
+# print("予測結果は" + test_pred + "です")

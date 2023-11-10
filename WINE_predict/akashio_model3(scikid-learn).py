@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 
 # ワインデータをファイルを開いて読み込む．
 wine_csv=[]
-with open ("winequality-white.csv","r", encoding="utf-8") as fp:
+with open ("WINE_predict/winequality-white.csv","r", encoding="utf-8") as fp:
     no=0
     for line in fp:
         line=line.strip()
