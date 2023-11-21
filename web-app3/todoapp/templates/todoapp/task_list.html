@@ -41,6 +41,7 @@
             </form>
         </div>
         <a href="{% url 'create-task' %}">カルテの追加</a>
+        
         <div class="loginAndLogout">
             {% if request.user.is_authenticated %}
             <a href="{% url 'logout' %}" >ログアウト</a>
@@ -80,7 +81,7 @@
 
         <div>
         {% comment %} <a href="{% url 'edit-task' task.id %}"class="editButton">編集</a>
-        <a href="{% url 'delete-task' task.id %}"class="deleteButton">削除</a> {% endcomment %}
+        {% endcomment %}
         </div>
 
     </div>
