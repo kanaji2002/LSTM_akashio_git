@@ -33,14 +33,14 @@
 <div class="tsuika_kennsaku_p">
     <div class="taskWrapper2">
         <div class = "taskWrapper2">
-            <a>商品CD</a>
-            <img src="{% static "images/search.svg"%}" width="8%" style="margin: 0 0 0 auto;" alt="" class="img-fluid">
+          
+            <img src="{% static 'images/search.svg'%}" width="8%" style="margin: 0 0 0 auto;" alt="" class="img-fluid">
             <form method="GET">
                 <input type="text" name="search" value="{{search}}" />
                 <input type="submit" value="検索" />
             </form>
         </div>
-        <a href="{% url 'create-task' %}">カルテの追加</a>
+        <a href="{% url 'create-task' %}">追加</a>
         
         <div class="loginAndLogout">
             {% if request.user.is_authenticated %}
@@ -88,7 +88,8 @@
     {% endfor %}
 </div>
 
-<!-- <p>{{request.user}}</p> -->
+<p class="right-align">{{ request.user }}でログイン中</p>
+
 
 </div>
 {% endblock content %}

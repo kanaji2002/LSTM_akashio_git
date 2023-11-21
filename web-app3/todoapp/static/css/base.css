@@ -4,7 +4,12 @@ body {
     padding-top: 55px;
 }
 
+/* styles.css */
 
+.right-align {
+    text-align: right;
+  }
+  
 .side-by-side-table {
     text-align: center;
     padding: 20px 0;

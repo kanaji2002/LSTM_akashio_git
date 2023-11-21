@@ -2,25 +2,32 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
+filepath='LSTM_akashio_output/CSV/number.csv'
 
-# 正規化されたデータ
-normalized = np.array([[0.33783784, 0.25, 1.0, 0.98795181,1],
-                      [1.0, 0.125, 0.0, 0.0,0],
-                      [0.33783784, 0.25, 1.0, 0.38554217,1],
-                      [0.45945946, 0.0, 0.0, 1.0,0],
-                      [0.0, 0.25, 1.0, 0.38554217,1],
-                      [0.32432432, 0.125, 0.0, 0.75903614,1],
-                      [0.0, 1.0, 1.0, 0.26506024,0],
-                      [0.32432432, 0.125, 0.0, 0.39759036,1]])
+# Load the wine data from a CSV file
+aka = pd.read_csv(filepath, delimiter=';')
+
+X = aka.iloc[:, :-1]  # 最後の列を除くすべての列を説明変数とする
+y = aka.iloc[:, -1]   # 最後の列を目的変数とする
+
+# データの正規化
+scaler = MinMaxScaler()
+X_normalized = scaler.fit_transform(X)
+print(pd.DataFrame(X_normalized, columns=X.columns).head())
+pd.DataFrame(X_normalized, columns=X.columns)
+
 
 # 説明変数と目的変数を分割
-X = normalized[:, :-1]  # 説明変数
-y = normalized[:, -1]   # 目的変数
+# X = normalized[:, :-1]  # 説明変数
+# y = normalized[:, -1]   # 目的変数
 
 # PyTorchのテンソルに変換
-X = torch.tensor(X, dtype=torch.float32)
-y = torch.tensor(y, dtype=torch.float32)
+# y.valuesで，pandasのデータフレームの列を，NumPy配列として取得することができる．
+X = torch.tensor(X_normalized, dtype=torch.float32)
+y = torch.tensor(y.values, dtype=torch.float32)
 
 # LSTMモデル定義
 class LSTMModel(nn.Module):
@@ -45,7 +52,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 # モデルの学習
-num_epochs = 300
+num_epochs = 30
 #epochs_list = list(range(num_epochs))
 epochs_list =[]
 loss_list = []
