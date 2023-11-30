@@ -11,15 +11,20 @@ filepath = 'LSTM_akashio_output/CSV/number.csv'
 # CSVファイルからデータを読み込み
 aka = pd.read_csv(filepath, delimiter=';')
 
-# 説明変数と目的変数を分割
-X = aka.iloc[:, :-1]  # 最後の列を除くすべての列を説明変数とする
-y = aka.iloc[:, -1]   # 最後の列を目的変数とする
+# 目的変数を抽出
+y = aka['quality']
 
-# データの正規化
+# 説明変数を抽出して正規化
+X = aka.drop('quality', axis=1)
 scaler = MinMaxScaler()
 X_normalized = scaler.fit_transform(X)
-X = torch.tensor(X_normalized, dtype=torch.float32)
-y = torch.tensor(y.values, dtype=torch.float32)  # yをNumPy配列から取得
+
+# PyTorchのテンソルに変換
+X_tensor = torch.tensor(X_normalized, dtype=torch.float32)
+y_tensor = torch.tensor(y.values, dtype=torch.float32)
+
+# 説明変数と目的変数に分割
+X_normalized = pd.DataFrame(X_normalized, columns=X.columns)  # 列名を保持したままデータフレームに変換
 
 # LSTMモデル定義
 class LSTMModel(nn.Module):
@@ -35,13 +40,12 @@ class LSTMModel(nn.Module):
         return torch.sigmoid(out)
 
 # モデル、損失関数、最適化手法の定義
-input_size = X.shape[1]
+input_size = X_normalized.shape[1]  # 説明変数の数
 hidden_size = 300
 output_size = 1
 
 model = LSTMModel(input_size, hidden_size, output_size)
 criterion = nn.BCEWithLogitsLoss()
-# criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 # モデルの学習
@@ -50,8 +54,12 @@ epochs_list = []
 loss_list = []
 
 for epoch in range(num_epochs):
-    outputs = model(X.view(-1, 1, input_size))
-    loss = criterion(outputs.view(-1), y)
+    outputs = model(X_tensor.view(-1, 1, input_size))
+    
+    # シグモイド関数を適用してから損失関数を計算
+    outputs_sigmoid = torch.sigmoid(outputs.view(-1))
+    loss = criterion(outputs_sigmoid, y_tensor)
+    
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
@@ -72,8 +80,8 @@ plt.show()
 model.eval()
 with torch.no_grad():
     # 学習データに対する予測
-    train_output = model(X.view(-1, 1, input_size))
-    train_predicted = (train_output.view(-1).numpy() > 0.5).astype(int)
+    train_output = model(X_tensor.view(-1, 1, input_size))
+    train_predicted = (torch.sigmoid(train_output.view(-1)).numpy() > 0.5).astype(int)
 
     # 学習データの予測結果をグラフに描画
     plt.figure(figsize=(10, 5))
@@ -86,9 +94,10 @@ with torch.no_grad():
     plt.show()
 
     # 新しいデータに対する予測
-    new_data = torch.tensor([[3, 43, 2, 13,3,3,2,4,5,6,22]], dtype=torch.float32)
-    test_output = model(new_data.view(-1, 1, input_size))
-    test_predicted = (test_output.view(-1).numpy() > 0.5).astype(int)
+    new_data = torch.tensor([[3, 43, 2, 13, 3, 3, 2, 4, 5, 6, 22]], dtype=torch.float32)
+    new_data_normalized = scaler.transform(new_data)
+    test_output = model(torch.tensor(new_data_normalized, dtype=torch.float32).view(-1, 1, input_size))
+    test_predicted = (torch.sigmoid(test_output.view(-1)).numpy() > 0.5).astype(int)
 
     # 新しいデータの予測結果を表示
     print("Predicted labels for new data:", test_predicted)
