@@ -1,2 +1,3 @@
-df_total['datetime'] = pd.to_datetime(df_total['datetime'])
-df_nissyaryou['datetime'] = pd.to_datetime(df_nissyaryou['datetime'])
+
+# df_total['hour'] = df_total['hour'].astype(int)
+# df_total['minute'] = df_total['minute'].astype(int)
