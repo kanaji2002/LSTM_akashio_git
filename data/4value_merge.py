@@ -7,8 +7,8 @@ df_nissyaryou = pd.read_csv("edited_akashio_data/nissyaryou.csv", encoding='shif
 
 df_total=pd.DataFrame()
 df_total['datetime'] = pd.to_datetime(df_total_original['datetime']).dt.date
-df_total['hour']=pd.to_datetime(df_total_original['datetime']).dt.hour
-df_total['minute']=pd.to_datetime(df_total_original['datetime']).dt.minute
+df_total['hour']=pd.to_datetime(df_total_original['datetime']).dt.hour.round().fillna(0).astype(int)
+df_total['minute']=pd.to_datetime(df_total_original['datetime']).dt.minute.round().fillna(0).astype(int)
 df_total[[ 'Tem', 'DO', 'Sal','Chl.a']]=df_total_original[[ 'Tem', 'DO', 'Sal', 'Chl.a']]
 
 # df_total['hour'] = df_total['hour'].astype(int)
@@ -46,7 +46,7 @@ merged_df = merged_df[['datetime', 'hour', 'minute', 'Tem', 'DO', 'Sal', 'nissya
 
 
 # # Save the result to a new CSV file
-# merged_df.to_csv("edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
+merged_df.to_csv("edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
 
 # Optional: Display the resulting DataFrame
 print(merged_df)

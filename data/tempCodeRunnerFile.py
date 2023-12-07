@@ -1,3 +1,1 @@
-
-# df_total['hour'] = df_total['hour'].astype(int)
-# df_total['minute'] = df_total['minute'].astype(int)
+merged_df.to_csv("edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
