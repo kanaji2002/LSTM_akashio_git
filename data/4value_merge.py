@@ -45,6 +45,19 @@ merged_df = merged_df.drop(columns=['goukei'])
 merged_df = merged_df[['datetime', 'hour', 'minute', 'Tem', 'DO', 'Sal', 'nissyaryou', 'Chl.a']]
 
 
+
+# # datetime カラムを文字列に変換してから新しい datetime カラムを作成
+# df['new_datetime'] = pd.to_datetime(df['datetime'].astype(str) + ' ' + df['hour'].astype(str) + ':' + df['minute'].astype(str), format='%Y-%m-%d %H:%M')
+
+
+# merged_df['datetime'] = pd.to_datetime(merged_df['datetime'].astype(str) + ' ' + merged_df['hour'].astype(str) + ':' + merged_df['minute'].astype(str), format='%Y-%m-%d %H:%M')
+
+# merged_df = merged_df.drop(columns=['hour'])
+# merged_df = merged_df.drop(columns=['minute'])
+
+# 欠損値を削除
+df = merged_df.dropna(subset=['datetime'])
+
 # # Save the result to a new CSV file
 merged_df.to_csv("edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
 
