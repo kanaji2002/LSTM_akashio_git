@@ -1,103 +1,113 @@
 import torch
 import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
+from torch.optim import SGD
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
-# CSVファイルのパス
-filepath = 'LSTM_akashio_output/CSV/number.csv'
+class Predictor(nn.Module):
+    def __init__(self, inputDim, hiddenDim, outputDim):
+        super(Predictor, self).__init__()
 
-# CSVファイルからデータを読み込み
-aka = pd.read_csv(filepath, delimiter=';')
-
-# 目的変数を抽出
-y = aka['quality']
-
-# 説明変数を抽出して正規化
-X = aka.drop('quality', axis=1)
-scaler = MinMaxScaler()
-X_normalized = scaler.fit_transform(X)
-
-# PyTorchのテンソルに変換
-X_tensor = torch.tensor(X_normalized, dtype=torch.float32)
-y_tensor = torch.tensor(y.values, dtype=torch.float32)
-
-# 説明変数と目的変数に分割
-X_normalized = pd.DataFrame(X_normalized, columns=X.columns)  # 列名を保持したままデータフレームに変換
-
-# LSTMモデル定義
-class LSTMModel(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super(LSTMModel, self).__init__()
-        self.hidden_size = hidden_size
-        self.lstm = nn.LSTM(input_size, hidden_size, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size)
-
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        out = self.fc(out[:, -1, :])
-        return torch.sigmoid(out)
-
-# モデル、損失関数、最適化手法の定義
-input_size = X_normalized.shape[1]  # 説明変数の数
-hidden_size = 300
-output_size = 1
-
-model = LSTMModel(input_size, hidden_size, output_size)
-criterion = nn.BCEWithLogitsLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
-# モデルの学習
-num_epochs = 30
-epochs_list = []
-loss_list = []
-
-for epoch in range(num_epochs):
-    outputs = model(X_tensor.view(-1, 1, input_size))
+        self.rnn = nn.LSTM(input_size=inputDim,
+                            hidden_size=hiddenDim,
+                            batch_first=True)
+        self.output_layer = nn.Linear(hiddenDim, outputDim)
     
-    # シグモイド関数を適用してから損失関数を計算
-    outputs_sigmoid = torch.sigmoid(outputs.view(-1))
-    loss = criterion(outputs_sigmoid, y_tensor)
+    def forward(self, inputs, hidden0=None):
+        output, (hidden, cell) = self.rnn(inputs, hidden0)
+        output = self.output_layer(output[:, -1, :])
+
+        return output
+
+def mkDataSet(csv_file, data_length=50, freq=60., noise=0.00):
+    """
+    params\n
+    csv_file : CSVファイルパス\n
+    data_length : 各データの時系列長\n
+    freq : 周波数\n
+    noise : ノイズの振幅\n
+    returns\n
+    train_x : トレーニングデータ（t=1,2,...,size-1の値)\n
+    train_t : トレーニングデータのラベル（t=sizeの値）\n
+    """
+    data = pd.read_csv(csv_file)
+    train_x = []
+    train_t = []
+
+    for offset in range(len(data) - data_length):
+        # 2つの説明変数を含むデータセットを作成
+        x_values = data.iloc[offset:offset + data_length][['Tem', 'Sal']].values
+        train_x.append([x_values + np.random.normal(loc=0.0, scale=noise) for _ in range(data_length)])
+        
+        # ラベルを作成
+        label = data.iloc[offset + data_length]['label']
+        train_t.append([label])
+
+    return train_x, train_t
+
+def mkRandomBatch(train_x, train_t, batch_size=10):
+    """
+    train_x, train_tを受け取ってbatch_x, batch_tを返す。
+    """
+    batch_x = []
+    batch_t = []
+
+    for _ in range(batch_size):
+        idx = np.random.randint(0, len(train_x) - 1)
+        batch_x.append(train_x[idx])
+        batch_t.append(train_t[idx])
     
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    return torch.tensor(batch_x), torch.tensor(batch_t)
 
-    if epoch == 0 or (epoch % 10 == 9):
-        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.6f}')
-        epochs_list.append(epoch)
-        loss_list.append(loss.item())
+def main():
+    # CSVファイルのパスを指定
+    csv_file = 'merged_data.csv'
 
-# 損失関数のラベルの指定と表示
-plt.plot(epochs_list, loss_list, color="k")
-plt.xlabel('Epoch')
-plt.ylabel('Loss')
-plt.title('Loss vs. Epoch')
-plt.show()
+    training_size = 10000
+    test_size = 1000
+    epochs_num = 1000
+    hidden_size = 5
+    batch_size = 100
 
-# モデルの評価
-model.eval()
-with torch.no_grad():
-    # 学習データに対する予測
-    train_output = model(X_tensor.view(-1, 1, input_size))
-    train_predicted = (torch.sigmoid(train_output.view(-1)).numpy() > 0.5).astype(int)
+    train_x, train_t = mkDataSet(csv_file)
+    test_x, test_t = mkDataSet(csv_file)
 
-    # 学習データの予測結果をグラフに描画
-    plt.figure(figsize=(10, 5))
-    plt.plot(y.numpy(), label='Actual labels', marker='o')
-    plt.plot(train_predicted, label='Predicted labels', marker='x')
-    plt.title('Training Data: Actual vs. Predicted Labels')
-    plt.xlabel('Sample')
-    plt.ylabel('Label')
-    plt.legend()
-    plt.show()
+    model = Predictor(2, hidden_size, 1)  # 説明変数が2つなのでinputDimを2に変更
+    criterion = nn.MSELoss()
+    optimizer = SGD(model.parameters(), lr=0.01)
 
-    # 新しいデータに対する予測
-    new_data = torch.tensor([[3, 43, 2, 13, 3, 3, 2, 4, 5, 6, 22]], dtype=torch.float32)
-    new_data_normalized = scaler.transform(new_data)
-    test_output = model(torch.tensor(new_data_normalized, dtype=torch.float32).view(-1, 1, input_size))
-    test_predicted = (torch.sigmoid(test_output.view(-1)).numpy() > 0.5).astype(int)
+    for epoch in range(epochs_num):
+        # training
+        running_loss = 0.0
+        training_accuracy = 0.0
+        for i in range(int(training_size / batch_size)):
+            optimizer.zero_grad()
 
-    # 新しいデータの予測結果を表示
-    print("Predicted labels for new data:", test_predicted)
+            data, label = mkRandomBatch(train_x, train_t, batch_size)
+
+            output = model(data)
+
+            loss = criterion(output, label)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+            training_accuracy += np.sum(np.abs((output.detach().numpy() - label.detach().numpy()) < 0.1))
+
+        # test
+        test_accuracy = 0.0
+        for i in range(int(test_size / batch_size)):
+            offset = i * batch_size
+            data, label = torch.tensor(test_x[offset:offset+batch_size]), torch.tensor(test_t[offset:offset+batch_size])
+            output = model(data, None)
+
+            test_accuracy += np.sum(np.abs((output.detach().numpy() - label.detach().numpy()) < 0.1))
+
+        training_accuracy /= training_size
+        test_accuracy /= test_size
+
+        print('%d loss: %.3f, training_accuracy: %.5f, test_accuracy: %.5f' % (
+            epoch + 1, running_loss, training_accuracy, test_accuracy))
+
+if __name__ == '__main__':
+    main()

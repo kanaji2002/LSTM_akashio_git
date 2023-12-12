@@ -7,9 +7,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import mean_squared_error
+import os
+
+# print("Current Working Directory:", os.getcwd())
 
 # データの読み込み
-df = pd.read_csv("test.csv")
+df = pd.read_csv("merged_data.csv")
 
 # 'datetime' カラムを日時型に変換
 df['datetime'] = pd.to_datetime(df['datetime'])
@@ -31,6 +34,8 @@ y = df_scaled[:, -1]
 
 # データセットの分割
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
+X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
 
 # NumPy arrays to PyTorch tensors
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
@@ -38,12 +43,21 @@ y_train_tensor = torch.tensor(y_train, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
 y_test_tensor = torch.tensor(y_test, dtype=torch.float32)
 
+
+# 目標の形状を変更
+y_train_tensor = y_train_tensor.view(-1, 1)
+y_test_tensor = y_test_tensor.view(-1, 1)
+
 # Create DataLoader for training and testing
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+
+# X_train, X_testの形状を変更
+
 
 # Define the LSTM model using PyTorch
 class LSTMModel(nn.Module):
@@ -54,7 +68,8 @@ class LSTMModel(nn.Module):
 
     def forward(self, x):
         lstm_out, _ = self.lstm(x)
-        output = self.fc(lstm_out[:, -1, :])
+        output = self.fc(lstm_out[:, -1, :].squeeze())
+
         return output
 
 # Instantiate the model
@@ -82,12 +97,16 @@ for epoch in range(num_epochs):
     if (epoch + 1) % 10 == 0:
         print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
 
+
 # Evaluate the model on the test set
 model.eval()
 with torch.no_grad():
     y_pred_tensor = model(X_test_tensor)
     y_pred_inv = scaler.inverse_transform(y_pred_tensor.numpy())
     y_test_inv = scaler.inverse_transform(y_test_tensor.numpy())
+
+print("Predicted Values:", y_pred_inv)
+print("Actual Values:", y_test_inv)
 
 # Calculate Mean Squared Error
 mse = mean_squared_error(y_test_inv, y_pred_inv)
