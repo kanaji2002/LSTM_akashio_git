@@ -12,7 +12,12 @@ for recorded_year in range(1982,2021):
     
     # "day"列から小数点が含まれる行を削除（日付で小数点のところがあったから削除）
     df = df[~df['day'].astype(str).str.contains('\.')]
+    df = df[~df['DO'].astype(str).str.contains('')]
+    df = df[~df['Sal'].astype(str).str.contains('')]
+    df = df[~df['nissyaryou'].astype(str).str.contains('')]
 
+    
+    
     #dataframeの特殊文字だけを置き換える．
     df['Chl.a']=df['Chl.a'].str.replace('>','')
     df['Chl.a']=df['Chl.a'].str.replace('<','')
