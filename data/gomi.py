@@ -1,14 +1,14 @@
 import pandas as pd
 
 # Read the CSV files
-df_total_original = pd.read_csv("edited_akashio_data/total_edited_data.csv", encoding='shift_jis')
-df_nissyaryou = pd.read_csv("edited_akashio_data/nissyaryou.csv", encoding='shift_jis')
+df_total_original = pd.read_csv("data/edited_akashio_data/total_edited_data.csv", encoding='shift_jis')
+df_nissyaryou = pd.read_csv("data/edited_akashio_data/nissyaryou.csv", encoding='shift_jis')
 
 df_total = pd.DataFrame()
 df_total['datetime'] = pd.to_datetime(df_total_original['datetime']).dt.date
 df_total['hour'] = pd.to_datetime(df_total_original['datetime']).dt.hour.round().fillna(0).astype(int)
 df_total['minute'] = pd.to_datetime(df_total_original['datetime']).dt.minute.round().fillna(0).astype(int)
-df_total[['Tem', 'DO', 'Sal', 'Chl.a']] = df_total_original[['Tem', 'DO', 'Sal', 'Chl.a']]
+df_total[['kai','Tem', 'DO', 'Sal', 'Chl.a']] = df_total_original[['kai','Tem', 'DO', 'Sal', 'Chl.a']]
 
 df_nissyaryou['datetime'] = pd.to_datetime(df_nissyaryou['datetime']).dt.date
 
@@ -31,7 +31,7 @@ merged_df['datetime'] = pd.to_datetime(merged_df['datetime'].astype(str) + ' ' +
 merged_df = merged_df.dropna(subset=['datetime'])
 
 # Save the result to a new CSV file
-merged_df.to_csv("edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
+merged_df.to_csv("data/edited_akashio_data/merged_data.csv", index=False, encoding='shift_jis')
 
 # Optional: Display the resulting DataFrame
 print(merged_df)

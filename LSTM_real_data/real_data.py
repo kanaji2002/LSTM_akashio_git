@@ -21,7 +21,8 @@ def mkDataSet(csv_file, label_column, test_size=0.1, data_length=50):
     data = pd.read_csv(csv_file)
 
     # Extract the relevant columns for input data and labels
-    input_columns = ["Tem", "DO","Sal","nissyaryou",]
+    # input_columns = ["Tem", "DO","Sal","nissyaryou"]
+    input_columns = ["Tem","Sal","nissyaryou"]
     input_data = data[input_columns]
     labels = data[label_column]
 

@@ -1,8 +1,8 @@
 import pandas as pd
 
 # Read the CSV files
-df_total_original = pd.read_csv("C:/Users/Kanaji Rinntarou/OneDrive - 独立行政法人 国立高等専門学校機構/Desktop/kennkyuu/LSTM_akashio/dataedited_akashio_datatotal_edited_data.csv", encoding='shift_jis')
-df_nissyaryou = pd.read_csv("edited_akashio_data/nissyaryou.csv", encoding='shift_jis')
+df_total_original = pd.read_csv("data/edited_akashio_data/kai_tem_do_sal_chl.csv", encoding='shift_jis')
+df_nissyaryou = pd.read_csv("data/edited_akashio_data/nissyaryou.csv", encoding='shift_jis')
 
 
 df_total=pd.DataFrame()
@@ -10,12 +10,8 @@ df_total['datetime'] = pd.to_datetime(df_total_original['datetime']).dt.date
 df_total['hour']=pd.to_datetime(df_total_original['datetime']).dt.hour.round().fillna(0).astype(int)
 df_total['minute']=pd.to_datetime(df_total_original['datetime']).dt.minute.round().fillna(0).astype(int)
 
-# # 'Chl.a' 列における "-" を含む行を削除
-df_total.drop(df_total[df_total['Tem'] == ''].index, inplace=True)
-df_total.drop(df_total[df_total['DO'] == ''].index, inplace=True)
-df_total.drop(df_total[df_total['Sal'] == ''].index, inplace=True)
-df_total.drop(df_total[df_total['Chl.a'] == ''].index, inplace=True)
-df_total[[ 'Tem', 'DO', 'Sal','Chl.a']]=df_total_original[[ 'Tem', 'DO', 'Sal', 'Chl.a']]
+
+df_total[[ 'kai','Tem', 'DO', 'Sal','Chl.a']]=df_total_original[[ 'kai','Tem', 'DO', 'Sal', 'Chl.a']]
 
 # df_total['hour'] = df_total['hour'].astype(int)
 # df_total['minute'] = df_total['minute'].astype(int)
@@ -48,7 +44,7 @@ merged_df = merged_df.drop(columns=['goukei'])
 # merged_df = merged_df.drop(columns=['day'])
 
 # 列の順序と列名（ラベル）を入れ替える
-merged_df = merged_df[['datetime', 'hour', 'minute', 'Tem', 'DO', 'Sal', 'nissyaryou', 'Chl.a']]
+merged_df = merged_df[['datetime', 'hour', 'minute', 'kai','Tem', 'DO', 'Sal', 'nissyaryou', 'Chl.a']]
 
 
 
@@ -65,7 +61,7 @@ merged_df = merged_df[['datetime', 'hour', 'minute', 'Tem', 'DO', 'Sal', 'nissya
 df = merged_df.dropna(subset=['datetime'])
 
 # # Save the result to a new CSV file
-merged_df.to_csv("edited_akashio_data/merged_data_not_nan.csv", index=False, encoding='shift_jis')
+merged_df.to_csv("data/edited_akashio_data/k_t_d_s_c_n_merged_data.csv", index=False, encoding='shift_jis')
 
 # Optional: Display the resulting DataFrame
 print(merged_df)
