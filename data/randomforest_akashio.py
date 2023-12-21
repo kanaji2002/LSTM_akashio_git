@@ -1,22 +1,20 @@
-from sklearn import svm, metrics
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
 # CSVファイルを読み込む
-df = pd.read_csv("data/edited_akashio_data/merged_data_not_nan copy.csv")
+df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
+df = df.replace('-', pd.NA).dropna()
+
+# 説明変数として使用する列を選択
+selected_columns = ['Tem', 'DO', 'Sal', 'nissyaryou']
+# 正解データの列を指定
+label_column = 'Chl.a'
 
 # データの前処理
-# labelには正解データが，dataにはその特徴量が入っている．
-labels = df['Chl.a']
-data = df.drop(['hour', 'minute','kai'], axis=1)
-
-
-# data["team_exp"] = -2 ** data["team_exp"]
-# data["term"] = data["term"] ** (1 / 2)
-
+labels = df[label_column]
+data = df[selected_columns]
 
 results = []
 for i in range(1, 2):
@@ -24,29 +22,30 @@ for i in range(1, 2):
     for j in range(0, 10):
         np.random.seed(j)
         # 訓練データとテストデータに分割
-        # test_sizeで，テストに使う割合を決めることができる．
         data_train, data_test, label_train, label_test = train_test_split(data, labels, test_size=0.1, random_state=0)
 
         # ランダムフォレストのアルゴリズムを利用して学習
-        clf = RandomForestRegressor(criterion="absolute_error")
+        clf = RandomForestRegressor(criterion="absolute_error", n_estimators=100)
         clf.fit(data_train, label_train)
 
         # テストデータで予測
         label_pred = clf.predict(data_test)
 
-        errors = []
-        # テストデータでの予測結果を表示
+        # 予測結果と誤差率を表示
         for true_label, prediction in zip(label_test, label_pred):
-            # 「soutaigosa」は，各テストデータに対して使用する
             error = abs(true_label - prediction) / prediction * 100
-            errors.append(error)
-            # print(f"True Label: {true_label}, Predicted Label: {prediction}, SoutaiGosa: {error}%")
-        mean_errors.append(np.mean(errors))
-        print(f"Seed{j:2}: {np.mean(errors):.3}%")
-    results.append(np.mean(mean_errors))
+            print(f"True Label: {true_label:.3f}, Predicted Label: {prediction:.3f}, Error Rate: {error:.3f}%")
+        
+        # 平均誤差率を計算
+        mean_errors.append(np.mean([abs(true_label - prediction) / prediction * 100 for true_label, prediction in zip(label_test, label_pred)]))
+    
+    # 各Seedでの平均誤差率を表示
+    for k, mean_error in enumerate(mean_errors):
+        print(f"Seed {k+1:2}: {mean_error:.3f}%")
+    
+    # 平均平均誤差率を計算
+    mean_mean_error = np.mean(mean_errors)
+    results.append(mean_mean_error)
 
-[print(f"平均平均誤差率 {i:.3}%") for i in results]
-
-# plt.plot(results)
-# plt.ylim(0, 100)
-# plt.show()
+# 平均平均誤差率を表示
+[print(f"平均平均誤差率 {i:.3f}%") for i in results]

@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-
+#HIU_only.py
 # 日射量なしの，ひうちなだのデータ
 # 空のDataFrameを作成
 result_data = pd.DataFrame(columns=['kai', 'year', 'mon', 'day', 'hour', 'minute', 'Tem','Sal','DO','Chl.a'])
@@ -43,6 +43,8 @@ for year in range(2000, 2023):
 # 時系列順にソート
 result_data.sort_values(['year', 'mon', 'day', 'hour', 'minute'], inplace=True)
 
+result_data['datetime'] = pd.to_datetime(result_data['year'].astype(str) + '-' + result_data['mon'].astype(str) + '-' + result_data['day'].astype(str) + ' ' + result_data['hour'].astype(str) + ':' + result_data['minute'].astype(str), format='%Y-%m-%d %H:%M', errors='coerce')
+result_data =result_data[['kai', 'datetime','Tem','Sal','DO', 'Chl.a']] 
 result_data.to_csv('edited_akashio_data/HIU_data.csv', index=False)
 
 # 結果を表示
