@@ -3,7 +3,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 import numpy as np
-
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 # CSVファイルを読み込む
 df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
 
@@ -35,6 +37,9 @@ clf.fit(data_train, label_train)
 # テストデータで予測
 label_pred = clf.predict(data_test)
 
+# 混同マトリックスを取得
+conf_matrix = confusion_matrix(label_test, label_pred)
+
 # 分類精度を表示
 accuracy = accuracy_score(label_test, label_pred)
 print(f"Accuracy: {accuracy:.3f}")
@@ -43,3 +48,15 @@ print(f"Accuracy: {accuracy:.3f}")
 report = classification_report(label_test, label_pred)
 print("Classification Report:")
 print(report)
+
+# 混同マトリックスを表示
+print("Confusion Matrix:")
+print(conf_matrix)
+
+# 混同マトリックスを可視化
+labels = df['label_class'].cat.categories
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
