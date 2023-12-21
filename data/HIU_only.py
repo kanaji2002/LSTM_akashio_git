@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+# 日射量なしの，ひうちなだのデータ
 # 空のDataFrameを作成
 result_data = pd.DataFrame(columns=['kai', 'year', 'mon', 'day', 'hour', 'minute', 'Tem','Sal','DO','Chl.a'])
 
