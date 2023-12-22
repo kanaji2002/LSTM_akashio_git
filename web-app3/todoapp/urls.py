@@ -18,5 +18,6 @@ urlpatterns=[
     path("ennbunn/", views.ennbunn_view, name='ennbunn'),
     path("tyouryuu/", views.tyouryuu_view, name='tyouryuu'),
     path("yosoku/", views.yosoku_view, name='yosoku'),
+    path("yosoku2/", views.yosoku_view2, name='yosoku2'),
 
 ]

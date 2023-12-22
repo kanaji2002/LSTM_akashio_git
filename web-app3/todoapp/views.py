@@ -31,6 +31,7 @@ print(sys.path)
 # 自作関数の呼び出し
 import akashio_random
 
+
 def my_page_view(request):
     return render(request, 'todoapp/my_page.html')
 
@@ -61,6 +62,18 @@ def yosoku_view(request):
         'yosoku': yosoku,
     }
     return render(request, 'todoapp/yosoku.html', context)
+
+def yosoku_view2(request):
+    now = datetime.now()
+    yosoku2=akashio_random.yosoku2()
+    # yosoku=test.test()
+    context = {
+        'yosoku2': yosoku2,
+        'text': '約900個の22年分のデータの燧灘（ひうちなだ）のデータを持ちて，数値データであるChl.aの濃度を，2クラスに均等に分類できるように閾値を決め（Chl.a=1），二値分類したときの結果．',
+        'time': now,
+        
+    }
+    return render(request, 'todoapp/yosoku2.html', context)
 
 
 

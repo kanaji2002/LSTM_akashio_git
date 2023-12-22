@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<link rel="stylesheet" type="css" href="base.css">
+{% extends 'todoapp/base.html'%}
+{% block content %}
+<h1>予測精度の表示</h1>
+
+<p>精度は</p>
+<p class="colored-text">
+  {{ yosoku2 }}
+</p>
+
+<style>
+    /* インラインでCSSを追加する */
+    .colored-text {
+      color: #e40e0e; /* 緑色 */
+      font-size: 26px; /* フォントサイズを大きくする */
+      font-weight: normal; /* 通常の太さに戻す */
+    }
+  </style>
+
+<p>です</p>
+
+<div >
+    <p>
+      {{ text }}
+    </p>
+</div>
+
+<div>
+<p>
+    {{ time }}
+</p>
+</div>
+
+<div>
+
+
+  </div>
+
+{% endblock content %}
