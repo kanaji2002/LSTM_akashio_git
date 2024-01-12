@@ -1,34 +1,48 @@
-from sklearn import svm, metrics
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 import numpy as np
 
 # CSVファイルを読み込む
 df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
-df = df.replace('-', pd.NA,).dropna()
-# データの前処理
-# labelには正解データが，dataにはその特徴量が入っている．
-labels = df['Chl.a']
-data = df.drop([ 'datetime','minute','kai'], axis=1)
 
-# 学習データとテストデータに分割
+# 空白をNaNに変換
+df.replace(' ', pd.NA, inplace=True)
+
+# NaNを含む行を削除
+df.dropna(inplace=True)
+
+# Chl.aを3つのクラスに分割
+df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1, np.inf], labels=[0, 1])
+
+#こんな感じで3分類もできる
+#df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1,3, np.inf], labels=[0, 1,2])
+
+# 説明変数として使用する列を選択
+selected_columns = ['Tem', 'DO','Sal', 'nissyaryou']
+# 正解データの列を指定
+label_column = 'label_class'
+
+# データの前処理
+labels = df[label_column]
+data = df[selected_columns]
+
+# 訓練データとテストデータに分割
 data_train, data_test, label_train, label_test = train_test_split(data, labels, test_size=0.1, random_state=0)
 
 # ランダムフォレストのアルゴリズムを利用して学習
-clf = RandomForestRegressor(criterion="absolute_error", n_estimators=100, oob_score=True)
-oob_errors = []
+clf = RandomForestClassifier(n_estimators=100, random_state=0)
+clf.fit(data_train, label_train)
 
-# 学習過程での誤差を計算
-for i in range(1, 101):
-    clf.set_params(n_estimators=i)
-    clf.fit(data_train, label_train)
-    oob_errors.append(1 - clf.oob_score_)
+# テストデータで予測
+label_pred = clf.predict(data_test)
 
-# 誤差率のプロット
-plt.plot(range(1, 101), oob_errors, label='OOB Error Rate')
-plt.xlabel('Number of Trees')
-plt.ylabel('Error Rate')
-plt.legend()
-plt.show()
+# 分類精度を表示
+accuracy = accuracy_score(label_test, label_pred)
+print(f"Accuracy: {accuracy:.3f}")
+
+# 分類レポートを表示
+report = classification_report(label_test, label_pred)
+print("Classification Report:")
+print(report)
