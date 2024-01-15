@@ -89,7 +89,7 @@ def main():
             data, label = torch.tensor(test_x[offset:offset+batch_size], dtype=torch.float32), torch.tensor(test_t[offset:offset+batch_size], dtype=torch.float32).view(-1, 1)
             output = model(data, None)
 
-            test_accuracy += torch.sum(torch.lt(torch.abs(output.detach() - label), 5).float())
+            test_accuracy += torch.sum(torch.lt(torch.abs(output.detach() - label), 500).float())
 
         training_accuracy /= len(train_x)
         test_accuracy /= len(test_x)

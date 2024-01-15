@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルを読み込む
-df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
+df = pd.read_csv("data/edited_akashio_data/HIU_data_+n.csv")
 
 # 空白をNaNに変換
 df.replace(' ', pd.NA, inplace=True)
@@ -14,7 +14,7 @@ df.replace(' ', pd.NA, inplace=True)
 df.dropna(inplace=True)
 
 # Chl.aを3つのクラスに分割
-df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1, np.inf], labels=[0, 1])
+df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1 ,2,5,10,20,np.inf,], labels=[0,1,2,3,4,5])
 
 #こんな感じで3分類もできる
 #df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1,3, np.inf], labels=[0, 1,2])

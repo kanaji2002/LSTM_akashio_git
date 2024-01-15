@@ -22,7 +22,7 @@ def yosoku2():
     df.dropna(inplace=True)
 
     # Chl.aを3つのクラスに分割
-    df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1, np.inf], labels=[0, 1])
+    df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1 ,2,5,10,20,np.inf,], labels=[0,1,2,3,4,5])
 
     # 説明変数として使用する列を選択
     selected_columns = ['Tem', 'DO','Sal', 'nissyaryou']
@@ -49,8 +49,28 @@ def yosoku2():
     # 分類精度を表示
     accuracy = accuracy_score(label_test, label_pred)
     
-    return accuracy
+    new_data = [[25.0,7.5,35.0,5.0]]
+    predicted_label = clf.predict(new_data)
+    string0="かなり安全です"
+    string1="安全です"
+    string2="注意が必要です"
+    string3="危険です"
+    string4="かなり危険です"
     
+    
+    if predicted_label==0:
+        return string0
+    elif predicted_label==1:
+        return string1
+    elif predicted_label==2:
+        return string2
+    elif predicted_label==3:
+        return string3
+    elif predicted_label==4:
+        return string4
+    
+    
+   
     # print(f"Accuracy: {accuracy:.3f}")
 
     # # 分類レポートを表示
