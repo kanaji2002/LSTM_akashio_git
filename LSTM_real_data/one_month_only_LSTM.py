@@ -10,16 +10,16 @@ table=pd.read_csv(url,                      #読み込むデータのURL
                   index_col='datetime',        #変数「Month」をインデックスに設定
                   parse_dates=True)         #インデックスを日付型に設定
 table.head()
+# 特定の列を除外する
+columns_to_exclude = ['minute', 'hour']  # 表示させたくない列を指定
+table_without_excluded_columns = table.drop(columns=columns_to_exclude)
+
 
 plt.rcParams['figure.figsize'] = [12, 9]
+table_without_excluded_columns.plot()
 
-table.plot()
 plt.title('data')                            #グラフタイトル
 plt.ylabel('plot') #y
 
 plt.xlabel('datetime')                                #ヨコ軸のラベル
-plt.show()
-stl=STL(table['Passengers'], period=12, robust=True)
-stl_series = stl.fit()
-stl_series.plot()
 plt.show()
