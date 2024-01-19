@@ -9,7 +9,6 @@ class Predictor(nn.Module):
     def __init__(self, inputDim, hiddenDim, outputDim):
         super(Predictor, self).__init__()
 
-        self.rnn = nn.LSTM(input_size=inputDim, hidden_size=hiddenDim, batch_first=True)
         self.output_layer = nn.Linear(hiddenDim, outputDim)
     
     def forward(self, inputs, hidden0=None):

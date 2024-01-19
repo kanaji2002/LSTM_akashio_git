@@ -51,11 +51,11 @@ def yosoku2():
     
     new_data = [[25.0,7.5,35.0,5.0]]
     predicted_label = clf.predict(new_data)
-    string0="かなり安全です"
-    string1="安全です"
-    string2="注意が必要です"
-    string3="危険です"
-    string4="かなり危険です"
+    string0="かなり安全"
+    string1="安全"
+    string2="注意が必要"
+    string3="危険"
+    string4="かなり危険"
     
     
     if predicted_label==0:

@@ -69,7 +69,7 @@ def yosoku_view2(request):
     # yosoku=test.test()
     context = {
         'yosoku2': yosoku2,
-        'text': '約900個の22年分のデータの燧灘（ひうちなだ）のデータを持ちて，数値データであるChl.aの濃度を，2クラスに均等に分類できるように閾値を決め（Chl.a=1），二値分類したときの結果．',
+        'text': '過去のデータをもとにした直近の予測値です．',
         'time': now,
         
     }
