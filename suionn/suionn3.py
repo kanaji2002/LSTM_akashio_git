@@ -1,3 +1,4 @@
+# ...
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
 import matplotlib.dates as mdates
-import tensorflow.compat.v1 as tf
+
 #suionn2.py
 # データの読み込み
 # "water_temperature_data.csv"の代わりに"suionn-sum.csv"を使用
@@ -64,7 +65,6 @@ for i in range(window_size, len(test_data)):
 # numpy arrayに変換
 x_test = np.array(x_test)
 x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
-
 # モデルによる予測
 predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)
@@ -79,20 +79,22 @@ fig, ax = plt.subplots(figsize=(16, 6))
 ax.xaxis.set_major_locator(mdates.YearLocator())
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
-plt.title('Water Temperature Prediction')
-plt.xlabel('Year', fontsize=14)
-plt.ylabel('Temperature', fontsize=14)
-plt.plot(train[s_target])
-plt.plot(valid[[s_target, 'Predictions']])
-plt.legend(['Train', 'Actual', 'Predictions'], loc='lower right')
-plt.show()
-valid.index = pd.to_datetime(valid.index)
-# # 2022年10月15日の予測値と実際の値を取得
-# prediction_2022_10_15 = valid.loc['2022/10/15', 'Predictions']
-# actual_2022_10_15 = valid.loc['2022/10/15', s_target]
+plt.title('水温予測')
+plt.xlabel('年', fontsize=14)
+plt.ylabel('温度', fontsize=14)
 
-# 2022年10月14日の予測値と実際の値を取得
-prediction_2022_10_14 = valid.loc['2022/10/14', 'Predictions']
+# 実測値が利用可能なら実測値を、そうでない場合は予測値を使用
+valid['最終予測値'] = np.where(valid[s_target].notnull(), valid[s_target], valid['Predictions'])
+
+plt.plot(train[s_target])
+plt.plot(valid[[s_target, '最終予測値']])
+plt.legend(['訓練データ', '実測値', '予測値'], loc='lower right')
+plt.show()
+
+valid.index = pd.to_datetime(valid.index)
+
+# 2022年10月14日の予測値と実測値を取得
+prediction_2022_10_14 = valid.loc['2022/10/14', '最終予測値']
 actual_2022_10_14 = valid.loc['2022/10/14', s_target]
 print(f"2022年10月14日の予測値: {prediction_2022_10_14}")
 print(f"2022年10月14日の実測値: {actual_2022_10_14}")

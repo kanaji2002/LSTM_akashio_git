@@ -2,7 +2,7 @@
 import pandas as pd                      #基本ライブラリー
 from statsmodels.tsa.seasonal import STL #STL分解
 import matplotlib.pyplot as plt          #グラフ描写
-# one_month_only_LSTM
+# LSTM_real_data\past_data_plot.py
 plt.style.use('ggplot')
 
 url="data/edited_akashio_data/HIU_data_+n.csv" #データセットのあるURL

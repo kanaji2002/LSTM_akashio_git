@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
 import matplotlib.dates as mdates
-import tensorflow.compat.v1 as tf
+
 #suionn2.py
 # データの読み込み
 # "water_temperature_data.csv"の代わりに"suionn-sum.csv"を使用
@@ -51,7 +51,18 @@ model.add(Dense(units=1))
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 # モデルの学習
-history = model.fit(x_train, y_train, batch_size=32, epochs=4)
+history = model.fit(x_train, y_train, batch_size=32, epochs=4, validation_split=0.1)
+
+# エポックごとの損失と精度を取得
+train_loss = history.history['loss']
+train_accuracy = history.history['accuracy']
+
+# グラフにプロット
+plt.plot(train_loss, label='Training Loss')
+plt.plot(train_accuracy, label='Training Accuracy')
+plt.xlabel('Epochs')
+plt.legend()
+plt.show()
 
 # テストデータを作成
 test_data = scaled_data[training_data_len - window_size:, :]
