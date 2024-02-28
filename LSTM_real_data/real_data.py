@@ -4,6 +4,7 @@ from torch.optim import SGD
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+
 # real_data.py
 class Predictor(nn.Module):
     def __init__(self, inputDim, hiddenDim, outputDim):
@@ -20,7 +21,7 @@ class Predictor(nn.Module):
 def mkDataSet(csv_file, label_column, test_size=0.1, data_length=50):
     data = pd.read_csv(csv_file)
 
-    # Extract the relevant columns for input data and labels
+
     # input_columns = ["Tem", "DO","Sal","nissyaryou"]
     input_columns = ["Tem","Sal","nissyaryou"]
     input_data = data[input_columns]
@@ -39,14 +40,13 @@ def mkDataSet(csv_file, label_column, test_size=0.1, data_length=50):
     return train_x, train_t, test_x, test_t
 
 def main():
-    csv_file_path = "data/edited_akashio_data/HIU_data_+n.csv"  # Replace with the path to your CSV file
-    label_column = "Chl.a"  # Replace with the actual column name for the label
+    csv_file_path = "../data/edited_akashio_data/HIU_data_+n.csv"  
+    label_column = "Chl.a"  
 
     train_x, train_t, test_x, test_t = mkDataSet(csv_file_path, label_column)
 
-    # Adjust input and output dimensions based on the columns used
-    input_dim = len(train_x[0][0])  # Number of features in the input
-    output_dim = 1  # Since we are predicting a single value
+    input_dim = len(train_x[0][0])  
+    output_dim = 1  
 
     hidden_size = 5
     epochs_num = 2000
@@ -59,10 +59,7 @@ def main():
     training_accuracies = []
     test_accuracies = []
     for epoch in range(epochs_num):
-        # training
-       # training
-        # training
-       # training
+
        
         running_loss = 0.0
         training_accuracy = 0.0
