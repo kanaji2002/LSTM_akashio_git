@@ -7,6 +7,7 @@ from keras.layers import Dense, LSTM, Dropout
 import matplotlib.dates as mdates
 #suionn2.py
 # データの読み込み
+# 動くコード
 # "water_temperature_data.csv"の代わりに"suionn-sum.csv"を使用
 water_temp_df = pd.read_csv("suionn-sum.csv", parse_dates=['datetime'], dayfirst=True)
 s_target = 'suionn'
