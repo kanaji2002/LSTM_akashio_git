@@ -9,7 +9,8 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import tensorflow
-#suionn6.py
+from tensorflow.python.keras.models import load_model
+#suionn7.py
 # ある指定した日Xまでの実測値を用いて，予測値を出し，その予測値と，Xまでの実測値でさらに予測値を出す．
 # データの読み込み
 # "water_temperature_data.csv"の代わりに"suionn-sum.csv"を使用
@@ -42,57 +43,36 @@ x_train, y_train = np.array(x_train), np.array(y_train)
 x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
 
 # モデルの構築
-model = Sequential()
-model.add(LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 1)))
-model.add(Dropout(0.2))
-model.add(LSTM(units=50, return_sequences=True))
-model.add(Dropout(0.2))
-model.add(LSTM(units=50, return_sequences=True))
-model.add(Dropout(0.2))
-model.add(LSTM(units=50))
-model.add(Dropout(0.2))
-model.add(Dense(units=1))
-model.compile(optimizer='adam', loss='mean_squared_error')
-
-# モデルの学習
-history = model.fit(x_train, y_train, batch_size=32, epochs=10)
-model.save('model_from_suionn6.h5')
+model = ()
+model=load_model('model_from_suionn6.h5')
+# ここから変更--------
+specified_data = '2021/11/28'
 # テストデータを作成
 test_data = scaled_data[training_data_len - window_size:, :]
 
-# ここから変更--------
-specified_data = '2022/4/30'
-# 特定の日のインデックスを取得
-specified_date_index = data.index.get_loc(specified_data)  # '指定した日の日付' には実際の日付を指定してください
-
-# 過去のデータを取得
-past_data = scaled_data[specified_date_index - window_size:specified_date_index, :]
-
-# 過去のデータを使って予測
-x_past = []
-for i in range(window_size):
-    x_past.append(scaled_data[specified_date_index - window_size + i:specified_date_index + i, 0])
-
-# numpy arrayに変換
-x_past = np.array(x_past)
-x_past = np.reshape(x_past, (x_past.shape[0], x_past.shape[1], 1))
-
-# モデルによる予測
-predicted_value = model.predict(x_past)
-predicted_value = scaler.inverse_transform(predicted_value)
+# 指定した日までのデータを使用して予測
+specified_date_index = data.index.get_loc(specified_data)
+specified_data_for_model = scaled_data[specified_date_index - window_size:specified_date_index, :]
+x_specified_date = np.reshape(specified_data_for_model, (1, specified_data_for_model.shape[0], 1))
+predicted_value_specified_date = model.predict(x_specified_date)
+predicted_value_specified_date = scaler.inverse_transform(predicted_value_specified_date)
 
 # 予測された値と過去の実測値を結合してさらに次を予測
-combined_data = np.concatenate((past_data, predicted_value), axis=0)
-next_prediction_data = combined_data[-window_size:, :]
+combined_data_specified_date = np.concatenate((specified_data_for_model, predicted_value_specified_date), axis=0)
+next_prediction_data_specified_date = combined_data_specified_date[-window_size:, :]
+x_next_specified_date = np.reshape(next_prediction_data_specified_date, (1, next_prediction_data_specified_date.shape[0], 1))
+next_prediction_specified_date = model.predict(x_next_specified_date)
+next_prediction_specified_date = scaler.inverse_transform(next_prediction_specified_date)
 
-# numpy arrayに変換
-x_next = np.reshape(next_prediction_data, (1, next_prediction_data.shape[0], 1))
+# 1日進めて次の日を予測
+specified_date_next_data = scaled_data[specified_date_index:specified_date_index + 1, :]
+x_specified_date_next = np.reshape(specified_date_next_data, (1, specified_date_next_data.shape[0], 1))
+predicted_value_specified_date_next = model.predict(x_specified_date_next)
+predicted_value_specified_date_next = scaler.inverse_transform(predicted_value_specified_date_next)
 
-# モデルによるさらなる予測
-next_prediction = model.predict(x_next)
-next_prediction = scaler.inverse_transform(next_prediction)
 
 specified_date = datetime.strptime(specified_data, '%Y/%m/%d')
 specified_date_next = specified_date + timedelta(days=1)  # 1日進める
-print(f"predict {specified_data}: {predicted_value[-1, 0]}")
-print(f"predict next day: {next_prediction[0, 0]}")
+# 結果の表示
+print(f"predict {specified_data}: {predicted_value_specified_date[-1, 0]}")
+print(f"predict {specified_date_next}: {predicted_value_specified_date_next[-1, 0]}")
