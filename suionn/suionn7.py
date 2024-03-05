@@ -12,8 +12,10 @@ import tensorflow
 from tensorflow.python.keras.models import load_model
 #suionn7.py
 # ある指定した日Xまでの実測値を用いて，予測値を出し，その予測値と，Xまでの実測値でさらに予測値を出す．
+# このコードは，h5ファイルを読みこんで，指定した日の予測を行う．
+model=Model()
+
 # データの読み込み
-# "water_temperature_data.csv"の代わりに"suionn-sum.csv"を使用
 water_temp_df = pd.read_csv("suionn-sum.csv", parse_dates=['datetime'], dayfirst=True)
 s_target = 'suionn'
 data = water_temp_df[['datetime', s_target]]
