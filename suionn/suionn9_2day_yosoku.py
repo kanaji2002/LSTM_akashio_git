@@ -1,142 +1,20 @@
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, LSTM, Dropout
+from tensorflow.keras.models import Sequential
+# from tensorflow.python.keras.layers import Dense, LSTM, Dropout
 from tensorflow.python.keras.models import Model
 
+from tensorflow.keras.layers import LSTM
+import keras
+from keras.layers import Dense
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
-import matplotlib.dates as mdates
+import matplotlib.dates as dates
 from datetime import datetime, timedelta
-import tensorflow
+import numpy as np
+import tensorflow as tf
 from tensorflow.python.keras.models import load_model
 #suionn9.py
-# suionn7で予測するコードを関数化し，スクレイピングも組みこみ，ネットからの昨日のデータをもとに，今日，明日を予測する．
-
-
-# # スクレイピングを行う．
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.chrome.service import Service
-# from selenium.webdriver.chrome.options import Options
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from webdriver_manager.chrome import ChromeDriverManager
-# import time
-
-
-# # 定期実行を行う．
-# import schedule
-
-# def scr_s():
-#         # Chromeのオプションを設定
-#     options = Options()
-#     options.add_argument('--no-sandbox')
-#     options.add_argument('--disable-dev-shm-usage')
-
-#     # Chromeドライバーを初期化
-#     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-#     driver.set_page_load_timeout(10)  # 10秒
-
-
-
-#     try:
-#         driver.get('https://suion.pref.kagawa.lg.jp/suion_hiuchi.php')
-#         print("The page was loaded in time！")
-#     except:
-#         print("time out!")
-        
-#     # ターゲットのウェブページにアクセス
-
-#     # driver.implicitly_wait(2)
-
-#     # # 要素がクリック可能になるまで待機するWebDriverWaitを作成
-#     # wait = WebDriverWait(driver, 5)
-
-#     # XPathを使用して要素を見つける
-#     e1 = driver.find_element(By.XPATH, "/html/body/div[3]/div[1]/div[2]/table/tbody/tr[1]/td[2]")
-
-#     print(e1.text)
-#     input_string = e1.text
-#     characters_to_remove = '℃'
-#     input_string = input_string.replace(characters_to_remove, '')
-
-#     today_s=input_string
-#     return today_s
-
-
-# # # 待機
-# # time.sleep(10)
-# import csv
-# from datetime import datetime
-# def write_scr_data():
-    
-
-#     # 今日の日付を取得
-#     today_date = datetime.now().strftime("%Y/%#m/%#d")
-
-#     # スクレイピングで取得したデータ（仮の値です）
-#     # scraped_data = {"value": 10.25}  # 実際のスクレイピング結果を入れてください
-#     scraped_data =scr_s()
-#     # CSVファイルのパス
-#     csv_file_path = "suionn-sum.csv"
-
-#     # CSVファイルを読み込み、既存のデータを取得
-#     existing_data = []
-#     with open(csv_file_path, 'r',encoding='utf-8-sig') as file:
-#         reader = csv.DictReader(file)
-#         existing_data = list(reader)
-
-#     ## 今日の日付に対応するデータが存在するか確認
-#     today_data_index = None
-#     for i, data in enumerate(existing_data):
-#         # 今日と同じ日付を全探索で見つける（約7000件）
-#         if data.get("datetime") == today_date:
-#             #そのindex（0始まり）を保存
-#             today_data_index = i
-#             break
-
-#     if today_data_index is not None:
-#         # 今日の日付に対応するデータが存在する場合、スクレイピングで取得したデータで上書き
-#         existing_data[today_data_index]["suionn"] = scraped_data
-
-#         updated_data=[existing_data[today_data_index]]
-#         # CSVファイルに書き込む
-#         header = ["datetime", "suionn"]
-#         with open(csv_file_path, 'w', newline='', encoding='utf-8') as file:
-#             writer = csv.DictWriter(file, fieldnames=header)
-#             writer.writeheader()
-#             # # 対象の行だけを書き込む
-#             # for i, row in enumerate(existing_data):
-#             writer.writerows(existing_data)
-
-
-
-
-#         print(f"{today_date}のデータがCSVファイルに追加されました.ok ")
-#     else:
-#         print(f"{today_date}の日付が用意されていない可能性があります．")
-        
-#     return 0
-
-# # write_scr_data()
-
-
-
-# # 毎日01:30に実行
-# schedule.every().day.at("18:47").do(write_scr_data)
-
-# while True:
-#     # スケジュールに登録されたタスクを実行
-#     schedule.run_pending()
-#     # 1分ごとに確認
-#     time.sleep(60)
-
-
-
-
-
-
 
 
 # データの読み込み
@@ -181,46 +59,82 @@ model=load_model('model_from_suionn6.h5')
 # 日射量に関しては，昨日のデータをもとに，今日と明日のデータを予測する．
 # つまり，今日の赤潮予測には，昨日までの日射量を用いた今日の日射量の予測値と，今日の平均水温（実測値）を使用する．
 
-specified_data = '2024/3/6' # 翌日
-specified_date = datetime.strptime(specified_data, '%Y/%m/%d')
-specified_date_next = specified_date + timedelta(days=1)  # 翌々日
+# specified_data = '2024/3/6' # 翌日
+# specified_date = datetime.strptime(specified_data, '%Y/%#m/%#d')
+# specified_date_next = specified_date + timedelta(days=1)  # 翌々日
 # データを0〜1の範囲に正規化
-scaler = MinMaxScaler(feature_range=(0, 1))
+#デフォで0-1の正規化をするので，feature_range=(0, 1)は書かなくていい
 
 
-if specified_data in data.index:
 
-    
-    # 指定した日を含まないように変更
-    specified_date_index = data.index.get_loc(specified_data) - 1
+def predict_temperature(model, specified_data):
+    # specified_date = datetime.strptime(specified_data, '%Y/%m/%d')
+    print('format')
+    print(f'today : {specified_data}')
 
-    # テストデータを作成
-    test_data = scaled_data[specified_date_index - window_size + 1:specified_date_index + 1, :]
+    # print("データの最初の日付:", data.index.min())
+    # print("データの最後の日付:", data.index.max())
 
-    # 指定した日までのデータを使用して予測
-    specified_data_for_model = scaled_data[specified_date_index - window_size:specified_date_index, :]  # size=60 正規化されている水温
-    x_specified_date = np.reshape(specified_data_for_model, (1, specified_data_for_model.shape[0], 1)) #LSTMに入力する形式にしている．
-    predicted_value_specified_date = model.predict(x_specified_date)
-    #predicted_value_specified_date = scaler.inverse_transform(predicted_value_specified_date)
+    # # 日付のフォーマット
+    # specified_date = '2002/1/1'
+    # specified_date_format = datetime.strptime(specified_date, '%Y/%m/%d')
+    # print("指定された日付のフォーマット:", specified_date_format)
 
 
-    # 予測された値と過去の実測値を結合してさらに次を予測
-    #predicted_value_specified_date = scaler.fit_transform(predicted_value_specified_date)
-    combined_data_specified_date = np.concatenate((specified_data_for_model, predicted_value_specified_date), axis=0)
-    next_prediction_data_specified_date = combined_data_specified_date[-window_size:, :]
-    x_next_specified_date = np.reshape(next_prediction_data_specified_date, (1, next_prediction_data_specified_date.shape[0], 1))
-    next_prediction_specified_date = model.predict(x_next_specified_date)
-    # next_prediction_specified_date = scaler.inverse_transform(next_prediction_specified_date)
-    print(f'combined_data_specified_date{combined_data_specified_date}')
-    # 1日進めて次の日を予測
-    specified_date_next_data = scaled_data[specified_date_index + 1:specified_date_index + 2, :]
-    x_specified_date_next = np.reshape(specified_date_next_data, (1, specified_date_next_data.shape[0], 1))
-    predicted_value_specified_date_next = model.predict(x_specified_date_next)
-    predicted_value_specified_date_next = scaler.inverse_transform(predicted_value_specified_date_next)
+    if specified_date in data.index:
+        specified_date_index = data.index.get_loc(specified_date) - 1
 
-    # 結果の表示
-    print(f"predict {specified_data}: {predicted_value_specified_date[-1, 0]}")
-    print(f"predict {specified_date_next}: {predicted_value_specified_date_next[-1, 0]}")
-    
-else:
-    print(f"The specified date '{specified_data}' does not exist in the data.")
+        for day in range(60):
+            # テストデータを作成
+            test_data = scaled_data[specified_date_index - window_size + 1:specified_date_index + 1, :]
+
+            # 指定した日までのデータを使用して予測
+            specified_data_for_model = scaled_data[specified_date_index - window_size:specified_date_index, :]
+            x_specified_date = np.reshape(specified_data_for_model, (1, specified_data_for_model.shape[0], 1))
+            predicted_value_specified_date = model.predict(x_specified_date)
+
+            # 予測された値と過去の実測値を結合してさらに次を予測
+            combined_data_specified_date = np.concatenate((specified_data_for_model, predicted_value_specified_date), axis=0)
+            # 予測データが結合された後に直近のデータを60個取った
+            next_prediction_data_specified_date = combined_data_specified_date[-window_size:, :]
+            next_prediction_data_specified_date_reshaped = np.reshape(next_prediction_data_specified_date, (window_size, 1))
+            scaled_data[specified_date_index - window_size+day+1:specified_date_index + day+1 , :] = next_prediction_data_specified_date_reshaped            # next_prediction_specified_date = model.predict(x_next_specified_date)
+
+            predicted_value_specified_date = scaler.inverse_transform(predicted_value_specified_date)
+            # next_prediction_specified_date = scaler.inverse_transform(next_prediction_specified_date)
+
+            # 結果の表示
+            if day == 0:
+                current_date = specified_date
+                print(f"Predicted temperature for {current_date}: {predicted_value_specified_date[-1, 0]}")
+                specified_date_next=datetime.strptime(specified_date, '%Y/%m/%d')
+                # next_date = specified_date_next + timedelta(days=day+1)
+                # next_date_srt=datetime.strftime(next_date, '%Y/%#m/%#d')
+                # specified_date_next=datetime.strptime(specified_date, '%Y/%m/%d')
+                # print(f"Predicted temperature for {next_date_srt}: {predicted_value_specified_date[-1, 0]}")
+            
+            else:
+                
+                next_date = datetime.strptime(specified_date, '%Y/%m/%d') + timedelta(days=day)
+                
+                # next_date=datetime.strftime(next_date, '%Y/%#m/%#d')
+                next_date_srt=datetime.strftime(next_date, '%Y/%#m/%#d')
+                print(f"Predicted temperature for {next_date_srt}: {predicted_value_specified_date[-1, 0]}")
+
+            specified_date_index += 1
+
+    else:
+        print(f"The specified date '{specified_data}' does not exist in the data.")
+
+
+
+
+
+
+
+# 強制的な日付指定
+specified_date = '2024/3/7'
+
+#specified_date = datetime.now().strftime("%Y/%#m/%#d")
+predict_temperature(model,specified_date)  # 例として指定した日の予測を実行
+

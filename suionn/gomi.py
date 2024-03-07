@@ -1,9 +1,9 @@
-from datetime import date, timedelta
+import tensorflow as tf
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 
-
-current_day = date.today()
-yesterday_day = date.today() - timedelta(days=1)
-
-
-print(current_day) #2022-06-29
-print(yesterday_day) #2022-06-28
+# ここにモデルの構築や訓練などのコードを追加します
+model = Sequential()
+model.add(Dense(units=64, activation='relu', input_dim=100))
+model.add(Dense(units=10, activation='softmax'))
+model.predict()
