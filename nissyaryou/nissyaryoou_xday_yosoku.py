@@ -90,7 +90,7 @@ def predict_temperature(model, specified_data):
     if specified_date in data.index:
         specified_date_index = data.index.get_loc(specified_date) - 1
 
-        for day in range(365):
+        for day in range(30):
             # テストデータを作成
             test_data = scaled_data[specified_date_index - window_size + 1:specified_date_index + 1, :]
 
@@ -139,7 +139,7 @@ def predict_temperature(model, specified_data):
 
 
 # 強制的な日付指定
-specified_date = '2024/1/1'
+specified_date = '2024/3/12'
 
 #specified_date = datetime.now().strftime("%Y/%#m/%#d")
 predict_temperature(model,specified_date)  # 例として指定した日の予測を実行
