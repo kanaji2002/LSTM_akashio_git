@@ -1,48 +1,36 @@
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 import numpy as np
 
-# CSVファイルを読み込む
-df = pd.read_csv("data/edited_akashio_data/HIU_data_+n.csv")
+dfs=[]
+#CSVファイルの読み込み
 
-# 空白をNaNに変換
-df.replace(' ', pd.NA, inplace=True)
+file1 = f'data/edited_akashio_data/HIU_data_all_data.csv'
+file2 = f'kousuiryou/kousuiryou.csv'
+file3 = f'tyouryuu/get_uv_250m_csv/merge.csv'
+df1 = pd.read_csv(file1, encoding='shift_jis')
+df2 = pd.read_csv(file2, encoding='shift_jis')
+df_t = pd.read_csv(file3, encoding='shift_jis')
 
-# NaNを含む行を削除
-df.dropna(inplace=True)
+# 日付と時間を結合してdatetime列を作成
+df1['datetime'] = pd.to_datetime(df1['datetime'])
+df2['datetime'] = pd.to_datetime(df2['datetime'])
+df_t['datetime'] = pd.to_datetime(df_t['datetime'])
 
-# Chl.aを3つのクラスに分割
-df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1 ,2,5,10,20,np.inf,], labels=[0,1,2,3,4,5])
+# datetime列を使って結合する
+merged_df = pd.merge(df1, df2, on='datetime')
 
-#こんな感じで3分類もできる
-#df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1,3, np.inf], labels=[0, 1,2])
+# df1のdatetime列を日付型に変換
+merged_df['datetime'] = pd.to_datetime(df1['datetime'])
 
-# 説明変数として使用する列を選択
-selected_columns = ['Tem', 'DO','Sal', 'nissyaryou']
-# 正解データの列を指定
-label_column = 'label_class'
+# 日付と時間を分割してdatetime列を作成
+df_t[['date', 'hour', 'time']] = df_t['datetime'].str.split(' ', expand=True)
+df_t['hour'] = df_t['hour'].str.split(':').str[0]  # 時刻の部分を取り除く
+df_t['hour'] = df_t['hour'].astype(int)  # hour列のデータ型を整数型に変換
+df_t['datetime'] = pd.to_datetime(df_t['date'] + ' ' + df_t['hour'].astype(str) + ':00')
 
-# データの前処理
-labels = df[label_column]
-data = df[selected_columns]
 
-# 訓練データとテストデータに分割
-data_train, data_test, label_train, label_test = train_test_split(data, labels, test_size=0.1, random_state=0)
+# 結合
+merged_df = pd.merge(merged_df, df_t, on=['datetime', 'hour'])
 
-# ランダムフォレストのアルゴリズムを利用して学習
-clf = RandomForestClassifier(n_estimators=100, random_state=0)
-clf.fit(data_train, label_train)
-
-# テストデータで予測
-label_pred = clf.predict(data_test)
-
-# 分類精度を表示
-accuracy = accuracy_score(label_test, label_pred)
-print(f"Accuracy: {accuracy:.3f}")
-
-# 分類レポートを表示
-report = classification_report(label_test, label_pred)
-print("Classification Report:")
-print(report)
+# 結合したデータを表示
+print(merged_df)
