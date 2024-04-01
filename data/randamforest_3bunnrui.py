@@ -4,11 +4,11 @@ from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 import numpy as np
 from sklearn.metrics import confusion_matrix
-#import seaborn as sns
+import seaborn as sns
 import matplotlib.pyplot as plt
 # CSVファイルを読み込む
-df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
-
+# df = pd.read_csv("edited_akashio_data/HIU_data_+n.csv")
+df = pd.read_csv("edited_akashio_data/HIU_data_all_data2.csv")
 # 空白をNaNに変換
 df.replace(' ', pd.NA, inplace=True)
 
@@ -19,7 +19,9 @@ df.dropna(inplace=True)
 df['label_class'] = pd.cut(df['Chl.a'], bins=[-np.inf, 1, np.inf], labels=[0, 1])
 
 # 説明変数として使用する列を選択
-selected_columns = ['Tem', 'DO','Sal', 'nissyaryou']
+# selected_columns = ['Tem', 'DO','Sal', 'nissyaryou','kousuiryou_2pre','uv']
+selected_columns = ['Tem', 'nissyaryou','kousuiryou_0pre','uv']
+#'kousuiryou_0pre','kousuiryou_1pre',
 # 正解データの列を指定
 label_column = 'label_class'
 
